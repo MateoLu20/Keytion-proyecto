@@ -53,8 +53,8 @@ La aplicación se centra en dos módulos principales:
 
 El diseño sigue un patrón de cards y listas para organizar la información de forma jerárquica, optimizado para la lectura rápida en dispositivos móviles. El menu principal y el apartado de "Comprobador" van a tener un aspecto similar al siguiente:
 
-<img width="428" height="908" alt="pantalla1" src="https://github.com/user-attachments/assets/ebe39840-34a7-408a-a287-917180a72e1c" />
-<img width="428" height="908" alt="pantalla2" src="https://github.com/user-attachments/assets/a67f4fbb-40a4-43bd-8620-25a2d7d75b06" />
+<img width="328" height="808" alt="pantalla1" src="https://github.com/user-attachments/assets/ebe39840-34a7-408a-a287-917180a72e1c" />
+<img width="328" height="808" alt="pantalla2" src="https://github.com/user-attachments/assets/a67f4fbb-40a4-43bd-8620-25a2d7d75b06" />
 
 ## Registro de Cambios (Changelog)
 
@@ -73,6 +73,11 @@ Añadido (Integración UI):
 - Integración de componentes de Feedback Visual (PasswordStrengthBar y RequirementChecklist) con colores dinámicos.
   
 - Diseño de Menús: Definición de la ubicación para las futuras opciones de Configuración/Ayuda usando el concepto de Menú de Opciones (Options Menu).
+
+<img width="368" height="822" alt="image" src="https://github.com/user-attachments/assets/482c2cf3-ba10-4180-a917-e68d64def867" />
+
+<img width="366" height="820" alt="image" src="https://github.com/user-attachments/assets/558f3fee-abb0-46cd-b12f-891f8c08187f" />
+
 
 ### [Futuro] - Hojas de Ruta
 
