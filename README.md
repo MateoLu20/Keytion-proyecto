@@ -56,4 +56,30 @@ El diseño sigue un patrón de cards y listas para organizar la información de 
 <img width="428" height="908" alt="pantalla1" src="https://github.com/user-attachments/assets/ebe39840-34a7-408a-a287-917180a72e1c" />
 <img width="428" height="908" alt="pantalla2" src="https://github.com/user-attachments/assets/a67f4fbb-40a4-43bd-8620-25a2d7d75b06" />
 
+## Registro de Cambios (Changelog)
 
+Esta sección documenta la evolución del proyecto Keytion a través de los módulos / semanas, cumpliendo con la necesidad de trazar los avances en el desarrollo.
+
+### [0.1.0] - Avance Actual
+
+Añadido (Integración UI):
+
+- Implementación de la Arquitectura de Actividad Única y la navegación basada en el estado de Compose.
+
+- Implementación completa de la interfaz visual del Módulo Comprobador de Contraseñas (PasswordCheckerScreen).
+
+- Inclusión de OutlinedTextField con PasswordVisualTransformation para la entrada de contraseña.
+
+- Integración de componentes de Feedback Visual (PasswordStrengthBar y RequirementChecklist) con colores dinámicos.
+  
+- Diseño de Menús: Definición de la ubicación para las futuras opciones de Configuración/Ayuda usando el concepto de Menú de Opciones (Options Menu).
+
+### [Futuro] - Hojas de Ruta
+
+Próximos Pasos:
+
+- Módulo Generador: Implementación de la lógica criptográfica de generación de contraseñas aleatorias.
+
+- Persistencia: Integración de SQLite o DataStore para almacenar localmente las preferencias del usuario.
+
+- Módulo de Información: Crear la pantalla de Ayuda/Info con un WebView para mostrar documentación sobre seguridad de contraseñas.
