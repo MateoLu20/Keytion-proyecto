@@ -60,7 +60,7 @@ El diseño sigue un patrón de cards y listas para organizar la información de 
 
 Esta sección documenta la evolución del proyecto Keytion a través de los módulos / semanas, cumpliendo con la necesidad de trazar los avances en el desarrollo.
 
-### [0.1.0]
+### [v0.1.0] - 22/11/2025
 
 Añadido (Integración UI):
 
@@ -79,7 +79,7 @@ Añadido (Integración UI):
 <img width="366" height="820" alt="image" src="https://github.com/user-attachments/assets/558f3fee-abb0-46cd-b12f-891f8c08187f" />
 
 
-### [0.2.0]
+### [v0.2.0] - 5/12/2025
 
 Caracteristicas añadidas:
 
@@ -92,4 +92,16 @@ Caracteristicas añadidas:
 - Componente Reutilizable: Se creó el componente OptionCheckbox para mejorar la reusabilidad en la interfaz.
 
 ![generadorpass](https://github.com/user-attachments/assets/6c33b964-1d00-458d-b28c-bdbc998cae5d)
+
+### [v0.3.0] - 13/12/2025
+
+Nuevo modulo:
+
+- Pantalla de Información de Seguridad: Se agregó la nueva pantalla informativa accesible desde el menú principal.
+
+- Consejos Clave: Se incluyeron tarjetas con los principios básicos de seguridad.
+
+- Componente InfoCard: Se creó un componente InfoCard estilizado y reutilizable para presentar cada consejo de forma clara y visualmente atractiva.
+
+![pantallainfo](https://github.com/user-attachments/assets/06091ef2-f411-4a20-9aa8-758b4a5723f6)
 
