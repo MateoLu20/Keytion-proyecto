@@ -23,6 +23,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+// Constantes para los conjuntos de caracteres
+const val CHARS_LOWERCASE = "abcdefghijklmnopqrstuvwxyz"
+const val CHARS_UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+const val CHARS_NUMBERS = "0123456789"
+const val CHARS_SYMBOLS = "!@#$%^&*()-_+=[]{}|;:,.<>?/~"
+
 // NAVEGACIÓN: DEFINICIÓN DE PANTALLAS
 sealed class Screen(val route: String) {
     object Menu : Screen("menu")
@@ -252,9 +258,47 @@ fun RequirementChecklist(strengthLevel: Int) {
 }
 
 
-// PANTALLA: GENERADOR DE CONTRASEÑAS (En proceso)
+// PANTALLA: GENERADOR DE CONTRASEÑAS
 @Composable
 fun PasswordGeneratorScreen(onNavigateTo: (Screen) -> Unit, modifier: Modifier = Modifier) {
+    // ----------------------------------------------------
+    // ESTADO
+    // ----------------------------------------------------
+    var length by remember { mutableStateOf(16f) } // Longitud inicial de 16
+    var includeUppercase by remember { mutableStateOf(true) }
+    var includeNumbers by remember { mutableStateOf(true) }
+    var includeSymbols by remember { mutableStateOf(false) }
+    var generatedPassword by remember { mutableStateOf("Pulsa Generar Clave") }
+
+    // LÓGICA
+
+    // Genera la contraseña basada en el estado actual.
+    fun generatePassword() {
+        var charPool = CHARS_LOWERCASE // Las minúsculas siempre van incluidas
+
+        if (includeUppercase) charPool += CHARS_UPPERCASE
+        if (includeNumbers) charPool += CHARS_NUMBERS
+        if (includeSymbols) charPool += CHARS_SYMBOLS
+
+        val finalLength = length.toInt()
+
+        // Validación simple para evitar errores
+        if (charPool.isEmpty() || finalLength == 0) {
+            generatedPassword = "Error: Sin caracteres seleccionados"
+            return
+        }
+
+        val newPassword = buildString {
+            repeat(finalLength) {
+                // Generación simple y aleatoria
+                val randomIndex = (charPool.indices).random()
+                append(charPool[randomIndex])
+            }
+        }
+        generatedPassword = newPassword
+    }
+
+    // Se usa LazyColumn para que la pantalla sea desplazable si llega a ser necesario mas adelante
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
@@ -263,7 +307,7 @@ fun PasswordGeneratorScreen(onNavigateTo: (Screen) -> Unit, modifier: Modifier =
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         item {
-            // Título y botón de regreso
+            // Título y Botón de Regreso
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -282,17 +326,91 @@ fun PasswordGeneratorScreen(onNavigateTo: (Screen) -> Unit, modifier: Modifier =
         }
 
         item {
-            Spacer(Modifier.height(30.dp))
-            Text("Aquí irán los controles y el resultado del generador.",
-                color = MaterialTheme.colorScheme.onSurface)
+            // 1. CONTROL DE LONGITUD
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "Longitud: ${length.toInt()} caracteres",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Slider(
+                    value = length,
+                    onValueChange = { length = it },
+                    valueRange = 8f..32f, // Rango de 8 a 32 caracteres
+                    steps = 23, // 32 - 8 = 24 valores (24 - 1 paso)
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
 
+        item {
+            // 2. OPCIONES DE CARACTERES
+            Text(
+                text = "Incluir Tipos de Caracteres",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(8.dp))
+
+            Column(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(MaterialTheme.colorScheme.surface).padding(16.dp)) {
+
+                // Opción Minúsculas (siempre activo)
+                OptionCheckbox(text = "Minúsculas (a-z)", checked = true, onCheckedChange = {}, enabled = false)
+
+                // Opción Mayúsculas
+                OptionCheckbox(
+                    text = "Mayúsculas (A-Z)",
+                    checked = includeUppercase,
+                    onCheckedChange = { includeUppercase = it }
+                )
+                // Opción Números
+                OptionCheckbox(
+                    text = "Números (0-9)",
+                    checked = includeNumbers,
+                    onCheckedChange = { includeNumbers = it }
+                )
+                // Opción Símbolos
+                OptionCheckbox(
+                    text = "Símbolos (!@#$%)",
+                    checked = includeSymbols,
+                    onCheckedChange = { includeSymbols = it }
+                )
+            }
+        }
+
+        item {
+            // 3. BOTÓN GENERAR
             Button(
-                onClick = { /* Lógica de generación */ },
-                modifier = Modifier.fillMaxWidth(),
+                onClick = { generatePassword() },
+                modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text("Generar")
+                Text("Generar Contraseña", fontSize = 18.sp)
             }
+        }
+
+        item {
+            // 4. RESULTADO
+            OutlinedTextField(
+                value = generatedPassword,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Contraseña Generada") },
+                trailingIcon = {
+                    IconButton(onClick = { /* TODO: Implementar copia al portapapeles */ }) {
+                        Icon(
+                            imageVector = Icons.Default.ContentCopy,
+                            contentDescription = "Copiar Contraseña",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                textStyle = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            )
         }
     }
 }
@@ -394,6 +512,29 @@ fun MenuButton(label: String, icon: ImageVector, onClick: () -> Unit) {
     }
 }
 
+// Componente reutilizable para los Checkboxes de opciones.
+@Composable
+fun OptionCheckbox(text: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit, enabled: Boolean = true) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Checkbox(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            enabled = enabled,
+            colors = CheckboxDefaults.colors(
+                checkedColor = MaterialTheme.colorScheme.primary,
+                uncheckedColor = MaterialTheme.colorScheme.onSurface
+            )
+        )
+        Spacer(Modifier.width(8.dp))
+        Text(text = text, style = MaterialTheme.typography.bodyLarge, color = if (enabled) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+    }
+}
+
 
 // --- VISTA PREVIA (Para Android Studio) ---
 @Preview(showBackground = true)
@@ -411,5 +552,14 @@ fun MenuScreenPreview() {
     KeytionTheme {
         // Le pasamos una función lambda vacía al Preview
         MainMenuView(onNavigateTo = {})
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GeneratorScreenPreview() {
+    KeytionTheme {
+        // Le pasamos una función lambda vacía al Preview
+        PasswordGeneratorScreen(onNavigateTo = {})
     }
 }
