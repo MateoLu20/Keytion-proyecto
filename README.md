@@ -60,7 +60,7 @@ El diseño sigue un patrón de cards y listas para organizar la información de 
 
 Esta sección documenta la evolución del proyecto Keytion a través de los módulos / semanas, cumpliendo con la necesidad de trazar los avances en el desarrollo.
 
-### [0.1.0] - Avance Actual
+### [0.1.0]
 
 Añadido (Integración UI):
 
@@ -79,12 +79,17 @@ Añadido (Integración UI):
 <img width="366" height="820" alt="image" src="https://github.com/user-attachments/assets/558f3fee-abb0-46cd-b12f-891f8c08187f" />
 
 
-### [Futuro] - Hojas de Ruta
+### [0.2.0]
 
-Próximos Pasos:
+Caracteristicas añadidas:
 
-- Módulo Generador: Implementación de la lógica criptográfica de generación de contraseñas aleatorias.
+- Generador de Contraseñas: Implementación completa de la pantalla PasswordGeneratorScreen en Compose/Kotlin.
 
-- Persistencia: Integración de SQLite o DataStore para almacenar localmente las preferencias del usuario.
+- Control de Parámetros: Se agregó un Slider para controlar la longitud de la contraseña (8 a 32 caracteres) y Checkboxes para seleccionar la inclusión de mayúsculas, números y símbolos.
 
-- Módulo de Información: Crear la pantalla de Ayuda/Info con un WebView para mostrar documentación sobre seguridad de contraseñas.
+- Lógica de Generación: Se implementó una lógica simple y eficiente para generar contraseñas aleatorias basada en el conjunto de caracteres seleccionado por el usuario.
+
+- Componente Reutilizable: Se creó el componente OptionCheckbox para mejorar la reusabilidad en la interfaz.
+
+![generadorpass](https://github.com/user-attachments/assets/6c33b964-1d00-458d-b28c-bdbc998cae5d)
+
