@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -34,6 +35,7 @@ sealed class Screen(val route: String) {
     object Menu : Screen("menu")
     object Checker : Screen("checker")
     object Generator : Screen("generator")
+    object Info : Screen("info") // NUEVA PANTALLA
 }
 
 // --- TEMA DE LA APLICACIÓN ---
@@ -89,12 +91,146 @@ fun KeytionApp() {
                 is Screen.Menu -> MainMenuView(onNavigateTo = navigateTo)
                 is Screen.Checker -> PasswordCheckerScreen(onNavigateTo = navigateTo)
                 is Screen.Generator -> PasswordGeneratorScreen(onNavigateTo = navigateTo)
+                is Screen.Info -> PasswordInfoScreen(onNavigateTo = navigateTo)
             }
         }
     }
 }
 
-// PANTALLA: COMPROBADOR DE CONTRASEÑAS (o PasswordCheckerScreen)
+// PANTALLA: INFORMACIÓN DE SEGURIDAD
+@Composable
+fun PasswordInfoScreen(onNavigateTo: (Screen) -> Unit, modifier: Modifier = Modifier) {
+    // Lista de consejos de seguridad para los usuarios
+    val infoItems = remember {
+        listOf(
+            SecurityInfo(
+                title = "Longitud es Clave",
+                description = "Una contraseña debe tener al menos 12 a 16 caracteres. Cuanto más larga, más tiempo le tomará a un atacante descifrarla.",
+                icon = Icons.Default.ZoomIn,
+                color = Color(0xFF10B981) // Emerald Green
+            ),
+            SecurityInfo(
+                title = "Variedad de Caracteres",
+                description = "Combina minúsculas, mayúsculas, números y símbolos. Esto aumenta la complejidad exponencialmente.",
+                icon = Icons.Default.Shuffle,
+                color = Color(0xFFF97316) // Orange
+            ),
+            SecurityInfo(
+                title = "Evita Información Personal",
+                description = "Nunca uses nombres, fechas de nacimiento, nombres de mascotas o información que se pueda encontrar fácilmente en redes sociales.",
+                icon = Icons.Default.Warning,
+                color = Color(0xFFEF4444) // Red
+            ),
+            SecurityInfo(
+                title = "Contraseñas Únicas",
+                description = "Utiliza una contraseña diferente para cada servicio. Si una se ve comprometida, las otras estarán seguras. Un gestor de contraseñas ayuda mucho.",
+                icon = Icons.Default.Security,
+                color = Color(0xFF6366F1) // Indigo
+            )
+        )
+    }
+
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
+            // Título y Botón de Regreso
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = { onNavigateTo(Screen.Menu) }) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Volver al Menú")
+                }
+                Text(
+                    text = "¿Contraseña Segura?",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+
+        item {
+            // Mensaje introductorio
+            Text(
+                text = "Aprende los principios básicos para crear y mantener claves que realmente protejan tus cuentas y datos personales.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
+            )
+        }
+
+        // Lista de tarjetas de información
+        items(infoItems) { info ->
+            InfoCard(info = info)
+        }
+    }
+}
+
+// Componente para mostrar un consejo de seguridad
+@Composable
+fun InfoCard(info: SecurityInfo) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Icono destacado
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(info.color.copy(alpha = 0.2f))
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = info.icon,
+                    contentDescription = info.title,
+                    tint = info.color,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+            Spacer(Modifier.width(16.dp))
+
+            // Título y Descripción
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = info.title,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = info.color
+                )
+                Text(
+                    text = info.description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                )
+            }
+        }
+    }
+}
+
+// Data class para la información
+data class SecurityInfo(
+    val title: String,
+    val description: String,
+    val icon: ImageVector,
+    val color: Color
+)
+
+
+// PANTALLA: COMPROBADOR DE CONTRASEÑAS
 @Composable
 fun PasswordCheckerScreen(onNavigateTo: (Screen) -> Unit, modifier: Modifier = Modifier) {
     var password by remember { mutableStateOf("") }
@@ -183,7 +319,7 @@ fun PasswordStrengthBar(strengthLevel: Int) {
     // Calculamos el progreso (0 a 1) para la barra
     val progress = strengthLevel.toFloat() / 3f
 
-    // Definimos los colores y etiquetas basados en el nivel
+    // La lógica de los colores y etiquetas debe estar fuera del remember (Corregido aquí)
     val (color, label) = when (strengthLevel) {
         0 -> Pair(MaterialTheme.colorScheme.error, "Baja") // Rojo
         1 -> Pair(Color(0xFFFACC15), "Media") // Amarillo
@@ -475,11 +611,11 @@ fun MainMenuView(onNavigateTo: (Screen) -> Unit, modifier: Modifier = Modifier) 
 
         Spacer(Modifier.height(25.dp))
 
-        // Botón 3: Información de seguridad
+        // Botón 3: Información de seguridad (ACTUALIZADO)
         MenuButton(
             label = "¿Qué es una Contraseña Segura?",
             icon = Icons.Default.Info,
-            onClick = { /* TODO: Ir a la pantalla de Info */ }
+            onClick = { onNavigateTo(Screen.Info) }
         )
 
     }
@@ -537,6 +673,14 @@ fun OptionCheckbox(text: String, checked: Boolean, onCheckedChange: (Boolean) ->
 
 
 // --- VISTA PREVIA (Para Android Studio) ---
+@Preview(showBackground = true)
+@Composable
+fun InfoScreenPreview() {
+    KeytionTheme {
+        PasswordInfoScreen(onNavigateTo = {})
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun CheckerScreenPreview() {
